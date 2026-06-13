@@ -9,12 +9,12 @@
         :root {
             --primary: #00f2ff;
             --secondary: #bd00ff;
-            --bg-dark: #050b14;
-            --glass: rgba(255, 255, 255, 0.1);
-            --text-main: #ffffff;
+            --bg-dark: radial-gradient(circle at center, #0a1424 0%, #03070d 100%);
+            --glass: rgba(255, 255, 255, 0.04);
+            --text-main: #e6f1ff;
             --success: #00ff88;
             --danger: #ff4d4d;
-            --hud-border: 1px solid rgba(0, 242, 255, 0.3);
+            --hud-border: 1px solid rgba(0, 242, 255, 0.2);
         }
 
         * {
@@ -28,7 +28,7 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            background-color: var(--bg-dark);
+            background: #050b14;
             color: var(--text-main);
             font-family: 'Exo 2', sans-serif;
             overflow: hidden;
@@ -41,6 +41,7 @@
             width: 100%;
             height: 100%;
             z-index: 0;
+            pointer-events: none;
         }
 
         #app {
@@ -54,6 +55,7 @@
             align-items: center;
             text-align: center;
             padding: 20px;
+            background: var(--bg-dark);
         }
 
         .screen {
@@ -62,9 +64,9 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            max-width: 600px;
+            max-width: 500px;
             height: 100%;
-            animation: fadeIn 0.8s ease-out;
+            animation: fadeIn 0.5s ease-out;
         }
 
         .screen.active {
@@ -72,7 +74,7 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -80,61 +82,60 @@
             font-family: 'Orbitron', sans-serif;
             text-transform: uppercase;
             margin-bottom: 20px;
-            text-shadow: 0 0 10px var(--primary);
+            text-shadow: 0 0 15px rgba(0, 242, 255, 0.4);
+            letter-spacing: 1px;
         }
 
-        h1 { font-size: 1.8rem; line-height: 1.2; color: var(--primary); }
-        h2 { font-size: 1.4rem; color: var(--secondary); }
-        p { font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px; color: #ddd; }
+        h1 { font-size: 1.6rem; line-height: 1.3; color: var(--primary); }
+        h2 { font-size: 1.3rem; color: var(--secondary); text-shadow: 0 0 15px rgba(189, 0, 255, 0.4); }
+        p { font-size: 1.05rem; line-height: 1.6; margin-bottom: 20px; color: #cbd5e1; }
 
         .hud-box {
             background: var(--glass);
             border: var(--hud-border);
-            backdrop-filter: blur(5px);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.1);
-            margin-bottom: 30px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            margin-bottom: 25px;
             width: 100%;
         }
 
         .btn {
-            background: transparent;
+            background: rgba(0, 242, 255, 0.03);
             color: var(--primary);
-            border: 2px solid var(--primary);
-            padding: 15px 30px;
+            border: 1px solid var(--primary);
+            padding: 14px 28px;
             font-family: 'Orbitron', sans-serif;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s;
-            border-radius: 5px;
-            margin: 10px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 12px;
+            margin: 8px;
             text-transform: uppercase;
-            position: relative;
-            overflow: hidden;
-            z-index: 10;
-        }
-
-        .btn:hover {
-            background: var(--primary);
-            color: var(--bg-dark);
-            box-shadow: 0 0 15px var(--primary);
+            box-shadow: 0 0 10px rgba(0, 242, 255, 0.1);
         }
 
         .btn:active {
             transform: scale(0.95);
+            background: var(--primary);
+            color: #050b14;
+            box-shadow: 0 0 20px var(--primary);
         }
 
         .btn-secondary {
             border-color: var(--secondary);
             color: var(--secondary);
+            background: rgba(189, 0, 255, 0.03);
+            box-shadow: 0 0 10px rgba(189, 0, 255, 0.1);
         }
 
-        .btn-secondary:hover {
+        .btn-secondary:active {
             background: var(--secondary);
-            color: var(--bg-dark);
-            box-shadow: 0 0 15px var(--secondary);
+            color: #050b14;
+            box-shadow: 0 0 20px var(--secondary);
         }
 
         .typewriter {
@@ -150,44 +151,44 @@
         }
 
         .mission-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
             width: 100%;
-            max-height: 50vh;
+            max-height: 45vh;
             overflow-y: auto;
-            padding: 5px;
+            padding: 4px;
         }
 
         .mission-card {
-            background: rgba(0,0,0,0.5);
-            border: 1px solid #444;
-            padding: 15px;
-            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 16px;
+            border-radius: 12px;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.2s ease;
             text-align: left;
         }
 
-        .mission-card:hover, .mission-card.selected {
-            border-color: var(--primary);
-            background: rgba(0, 242, 255, 0.1);
+        .mission-card:active {
+            transform: scale(0.98);
         }
 
-        .mission-title { font-weight: bold; color: var(--primary); font-family: 'Orbitron'; font-size: 0.9rem; }
-        .mission-desc { font-size: 0.85rem; color: #aaa; }
+        .mission-title { font-weight: 700; color: var(--primary); font-family: 'Orbitron'; font-size: 0.95rem; margin-bottom: 4px; }
+        .mission-desc { font-size: 0.85rem; color: #94a3b8; line-height: 1.4; }
 
         .game-area {
             position: relative;
             width: 100%;
-            min-height: 280px;
+            min-height: 300px;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-wrap: wrap;
             gap: 20px; 
-            border: 1px dashed rgba(255,255,255,0.1);
-            border-radius: 8px;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
         }
 
         .game-area button {
@@ -198,104 +199,36 @@
         #btn-yes { 
             border-color: var(--success); 
             color: var(--success); 
-            z-index: 30; /* Prioridad de capa absoluta */
+            background: rgba(0, 255, 136, 0.03);
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.1);
+            z-index: 30; 
         }
-        #btn-yes:hover { background: var(--success); box-shadow: 0 0 15px var(--success); }
+        #btn-yes:active { background: var(--success); color: #050b14; box-shadow: 0 0 20px var(--success); }
 
-        #btn-no { border-color: var(--danger); color: var(--danger); z-index: 20; }
+        #btn-no { 
+            border-color: var(--danger); 
+            color: var(--danger); 
+            background: rgba(255, 77, 77, 0.03);
+            box-shadow: 0 0 10px rgba(255, 77, 77, 0.1);
+            z-index: 20; 
+        }
 
         #btn-no.moving {
             position: absolute;
             transition: top 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), left 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-
+        
         #btn-giveup {
             display: none;
             border-color: #ffd700;
             color: #ffd700;
-            font-size: 1rem;
-            padding: 10px 20px;
+            font-size: 0.95rem;
+            padding: 12px 24px;
             margin-top: 20px;
-            background: var(--bg-dark);
+            background: rgba(255, 215, 0, 0.03);
+            border-radius: 12px;
         }
-
-        #toast-container {
-            position: fixed;
-            bottom: 20%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 400px;
-            z-index: 100;
-            pointer-events: none;
-        }
-
-        .toast {
-            background: rgba(0, 0, 0, 0.9);
-            border: 1px solid var(--danger);
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.9rem;
-            text-align: center;
-            opacity: 0;
-            animation: toastPop 2s forwards;
-        }
-
-        @keyframes toastPop {
-            0% { opacity: 0; transform: translateY(10px); }
-            10% { opacity: 1; transform: translateY(0); }
-            80% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-10px); }
-        }
-
-        .celebration-container {
-            position: relative;
-            width: 150px;
-            height: 150px;
-            margin: 0 auto 30px auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .planet {
-            font-size: 5rem;
-            animation: float 3s ease-in-out infinite;
-            position: relative;
-            z-index: 2;
-        }
-
-        .ring {
-            position: absolute;
-            width: 180px;
-            height: 60px;
-            border: 4px solid var(--primary);
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-20deg);
-            z-index: 1;
-            box-shadow: 0 0 10px var(--primary);
-        }
-
-        .star-icon {
-            position: absolute;
-            color: yellow;
-            animation: twinkle 1s infinite alternate;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(5deg); }
-        }
-
-        @keyframes twinkle {
-            from { opacity: 0.3; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1.2); }
-        }
+        #btn-giveup:active { background: #ffd700; color: #050b14; }
 
         .quiz-options {
             display: flex;
@@ -306,9 +239,9 @@
 
         .progress-bar-container {
             width: 100%;
-            height: 20px;
-            background: #222;
-            border: 1px solid #444;
+            height: 14px;
+            background: #111827;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             margin: 20px 0;
             border-radius: 10px;
             overflow: hidden;
@@ -318,29 +251,32 @@
             height: 100%;
             width: 0%;
             background: var(--success);
-            box-shadow: 0 0 10px var(--success);
+            box-shadow: 0 0 15px var(--success);
             transition: width 0.1s linear;
         }
 
         .stat-row {
             display: flex;
             justify-content: space-between;
-            margin: 10px 0;
-            border-bottom: 1px solid #333;
-            padding-bottom: 5px;
+            margin: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 6px;
+            font-size: 0.95rem;
         }
-        .stat-val { color: var(--primary); font-weight: bold; }
+        .stat-val { color: var(--primary); font-weight: bold; font-family: 'Orbitron'; }
 
         .achievement {
             opacity: 0;
-            transform: scale(0.8);
+            transform: scale(0.9);
             margin: 10px 0;
-            background: linear-gradient(90deg, transparent, rgba(189, 0, 255, 0.2), transparent);
-            padding: 10px;
-            border-radius: 5px;
+            background: linear-gradient(90deg, transparent, rgba(189, 0, 255, 0.15), transparent);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(189, 0, 255, 0.1);
         }
         .achievement.show {
-            animation: unlock 0.5s forwards;
+            animation: unlock 0.4s forwards;
         }
 
         @keyframes unlock {
@@ -349,16 +285,30 @@
 
         #prob-bar-container {
             position: absolute;
-            bottom: 10px;
+            bottom: 15px;
             width: 90%;
             display: none;
         }
-        .prob-bar-bg { background: rgba(255,0,0,0.2); height: 5px; width: 100%; }
-        .prob-bar-fill { background: red; height: 100%; width: 100%; }
+        .prob-bar-bg { background: rgba(255, 77, 77, 0.1); height: 6px; width: 100%; border-radius: 3px; overflow: hidden; }
+        .prob-bar-fill { background: var(--danger); height: 100%; width: 100%; box-shadow: 0 0 10px var(--danger); }
 
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
+        .celebration-container {
+            position: relative; width: 140px; height: 140px; margin-bottom: 20px;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .planet { font-size: 4.5rem; animation: float 3s ease-in-out infinite; position: relative; z-index: 2; }
+        .ring {
+            position: absolute; width: 170px; height: 55px; border: 3px solid var(--primary);
+            border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-20deg);
+            z-index: 1; box-shadow: 0 0 15px var(--primary);
+        }
+        .star-icon { position: absolute; color: #ffd700; animation: twinkleIcon 1s infinite alternate; font-size: 1.2rem; }
+        @keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-8px) rotate(4deg); } }
+        @keyframes twinkleIcon { from { opacity: 0.3; transform: scale(0.8); } to { opacity: 1; transform: scale(1.2); } }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 242, 255, 0.3); border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -377,13 +327,13 @@
 
         <div id="screen-2" class="screen">
             <h2>Capitán, tenemos una pregunta importante.</h2>
-            <p style="font-size: 1.3rem; margin-bottom: 40px;">¿Te gustaría salir y platicar conmigo?</p>
+            <p style="font-size: 1.2rem; margin-bottom: 30px;">¿Te gustaría salir y platicar conmigo?</p>
             
             <div class="game-area" id="game-area">
                 <button id="btn-yes" class="btn">Sí 🚀</button>
                 <button id="btn-no" class="btn">No ❌</button>
                 <div id="prob-bar-container">
-                    <div style="font-size: 0.7rem; color: #ff4d4d; text-align: left; margin-bottom: 2px;">Probabilidad de captura: 0.000001%</div>
+                    <div style="font-size: 0.7rem; color: #ff4d4d; text-align: left; margin-bottom: 4px; font-family: 'Orbitron';">Probabilidad de captura: 0.000001%</div>
                     <div class="prob-bar-bg"><div class="prob-bar-fill"></div></div>
                 </div>
             </div>
@@ -398,7 +348,7 @@
                 <span class="star-icon" style="top:10px; right:0; animation-delay:0.5s">✨</span>
                 <span class="star-icon" style="bottom:10px; left:20px; animation-delay:0.2s">✨</span>
             </div>
-            <h1 style="color: var(--success)">¡Esoooo!</h1>
+            <h1 style="color: var(--success); text-shadow: 0 0 15px rgba(0,255,136,0.3);">¡Esoooo!</h1>
             <p>Ahora necesito algunos datos para la TacoMisión Espacial.</p>
             <button class="btn" onclick="game.nextScreen('screen-4')">Continuar</button>
         </div>
@@ -412,7 +362,7 @@
                     <div class="mission-desc">Café, pan y buena conversación.</div>
                 </div>
                 <div class="mission-card" onclick="game.selectMission('Expedición a un lugar interesante', this)">
-                    <div class="mission-title">🏰 Expedición Interesante</div>
+                    <div class="mission-title">🏰 Expedición Interesting</div>
                     <div class="mission-desc">Castillo, cine, museo o coordenadas secretas.</div>
                 </div>
                 <div class="mission-card" onclick="game.selectMission('Caminata Orbital', this)">
@@ -434,19 +384,19 @@
             <h2>🔭 Misión Secundaria:<br>Test Astronómico</h2>
             <p>¿Te crees capaz de ganarte un Kinder Bueno por cada respuesta correcta? 🍫</p>
             <div class="hud-box" style="border-color: var(--secondary);">
-                <p style="font-size: 0.9rem; margin:0;">Advertencia: Las recompensas prometidas por esta agencia espacial son reales.</p>
+                <p style="font-size: 0.85rem; margin:0; color: #e2e8f0;">Advertencia: Las recompensas prometidas por esta agencia espacial son reales.</p>
             </div>
             <p>¿Deseas participar?</p>
-            <button class="btn" style="width: 200px;" onclick="game.startQuiz()">Sí 🚀</button>
+            <button class="btn" style="width: 180px;" onclick="game.startQuiz()">Sí 🚀</button>
         </div>
 
         <div id="screen-quiz" class="screen">
             <div class="hud-box">
-                <h3 id="q-title">Pregunta X</h3>
-                <p id="q-text" style="font-size: 1.2rem; color: #fff;">¿Texto?</p>
+                <h3 id="q-title" style="font-family:'Orbitron'; color:var(--secondary); margin-top:0;">Pregunta X</h3>
+                <p id="q-text" style="font-size: 1.1rem; color: #fff; margin-bottom:15px; font-weight:700;">¿Texto?</p>
                 <div id="q-options" class="quiz-options"></div>
             </div>
-            <p id="q-feedback" style="min-height: 40px; color: var(--primary); font-weight: bold;"></p>
+            <p id="q-feedback" style="min-height: 40px; color: var(--primary); font-weight: bold; font-size:0.95rem; padding:0 10px;"></p>
             <button id="btn-next-q" class="btn" style="display: none;" onclick="game.nextQuestion()">Siguiente Pregunta</button>
         </div>
 
@@ -455,7 +405,7 @@
             <div class="progress-bar-container">
                 <div id="analysis-bar" class="progress-bar"></div>
             </div>
-            <p id="analysis-text">████░░░░░░ 40%</p>
+            <p id="analysis-text" style="font-family:'Orbitron'; font-size:0.9rem; color:var(--primary);">████░░░░░░ 40%</p>
         </div>
 
         <div id="screen-results" class="screen">
@@ -469,26 +419,26 @@
                 <div class="stat-row"><span>Kinder Buenos Adeudados:</span> <span class="stat-val" id="kinder-count">0</span></div>
             </div>
 
-            <h3>Logros Desbloqueados</h3>
-            <div id="achievements-list"></div>
+            <h3 style="font-size:1.1rem; margin-bottom:10px;">Logros Desbloqueados</h3>
+            <div id="achievements-list" style="width:100%;"></div>
 
-            <button class="btn" style="margin-top: 30px;" onclick="game.showFinal()">Ver Diagnóstico Final</button>
+            <button class="btn" style="margin-top: 20px;" onclick="game.showFinal()">Ver Diagnóstico Final</button>
         </div>
 
         <div id="screen-final" class="screen">
             <h1>Diagnóstico Final</h1>
             <div class="hud-box">
-                <p style="text-align: left;">
+                <p style="text-align: left; font-size:0.95rem; margin:0;">
                     Los cálculos indican que deberíamos:<br>
                     ✓ Platicar.<br>
                     ✓ Comer algo rico.<br>
-                    ✓ Reírnos un rato.<br>
+                    ✓ Reírnos un rato.<br><br>
                     <strong>Resultado final:</strong> Vale la pena intentarlo.<br><br>
                     <strong>🚀 Siguiente objetivo:</strong> Coordinar fecha y hora.<br>
-                    <strong>Salida aceptada:</strong> <span id="final-mission-name">...</span>
+                    <strong>Salida aceptada:</strong> <span id="final-mission-name" style="color:var(--primary); font-weight:bold;">...</span>
                 </p>
             </div>
-            <button class="btn" style="background: var(--success); border-color: var(--success); color: #000;" onclick="game.sendWhatsApp()">
+            <button class="btn" style="background: var(--success); border-color: var(--success); color: #050b14; width:90%;" onclick="game.sendWhatsApp()">
                 Enviar Transmisión
             </button>
         </div>
@@ -509,7 +459,7 @@
                 const gain = audioCtx.createGain();
                 osc.type = type;
                 osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
@@ -524,10 +474,11 @@
                 setTimeout(() => sfx.playTone(800, 'sine', 0.1), 100);
                 setTimeout(() => sfx.playTone(1200, 'sine', 0.3), 200);
             },
-            jump: () => sfx.playTone(300, 'square', 0.1),
+            jump: () => sfx.playTone(350, 'square', 0.08),
             startBgm: () => {
                 if (isBgmPlaying) return;
                 if(audioCtx.state === 'suspended') audioCtx.resume();
+
                 bgmOscillator = audioCtx.createOscillator();
                 bgmGain = audioCtx.createGain();
                 bgmOscillator.type = 'sine';
@@ -536,14 +487,14 @@
                 bgmOscillator.connect(bgmGain);
                 bgmGain.connect(audioCtx.destination);
                 bgmOscillator.start();
-                bgmGain.gain.linearRampToValueAtTime(0.03, audioCtx.currentTime + 4); 
+                bgmGain.gain.linearRampToValueAtTime(0.02, audioCtx.currentTime + 4); 
                 isBgmPlaying = true;
             }
         };
 
         document.body.addEventListener('click', () => { sfx.startBgm(); }, { once: true });
 
-        /* --- 2. Starfield Background --- */
+        /* --- 2. Clean Starfield Background (No Streak Bug) --- */
         const canvas = document.getElementById('starfield');
         const ctx = canvas.getContext('2d');
         let width, height;
@@ -559,35 +510,46 @@
         resize();
 
         class Star {
-            constructor() { this.reset(); }
+            constructor() { this.reset(); this.y = Math.random() * height; }
             reset() {
                 this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.z = Math.random() * 2 + 0.5;
-                this.size = Math.random() * 1.5;
-                this.opacity = Math.random();
+                this.y = 0;
+                this.speed = Math.random() * 0.4 + 0.1; // Caída más fina y suave
+                this.radius = Math.random() * 1.2 + 0.4;
+                this.baseOpacity = Math.random() * 0.5 + 0.3;
+                this.twinkleSpeed = Math.random() * 0.05 + 0.01;
+                this.angle = Math.random() * Math.PI;
             }
             update() {
-                this.y += this.z * 0.5;
-                if (this.y > height) {
-                    this.y = 0;
-                    this.x = Math.random() * width;
-                }
+                this.y += this.speed;
+                this.angle += this.twinkleSpeed;
+                if (this.y > height) this.reset();
             }
             draw() {
-                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                // Cálculo de opacidad oscilante para evitar el efecto de parpadeo ruidoso
+                const opacity = this.baseOpacity + Math.sin(this.angle) * 0.2;
+                
+                // Dibujar estrella difuminada como un punto de luz real
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius * 2);
+                gradient.addColorStop(0, `rgba(255, 255, 255, ${opacity})`);
+                gradient.addColorStop(0.4, `rgba(0, 242, 255, ${opacity * 0.5})`);
+                gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                ctx.fillStyle = gradient;
+                ctx.arc(this.x, this.y, this.radius * 2, 0, Math.PI * 2);
                 ctx.fill();
             }
         }
 
-        for (let i = 0; i < 150; i++) stars.push(new Star());
+        for (let i = 0; i < 80; i++) stars.push(new Star()); // Menos estrellas pero de mayor calidad visual
 
         function animateStars() {
-            ctx.fillStyle = 'rgba(5, 11, 20, 0.3)';
-            ctx.fillRect(0, 0, width, height);
-            stars.forEach(star => { star.update(); star.draw(); });
+            // Limpieza cristalina total de la pantalla para erradicar las rayas del renderizado anterior
+            ctx.clearRect(0, 0, width, height);
+            stars.forEach(star => {
+                star.update();
+                star.draw();
+            });
             requestAnimationFrame(animateStars);
         }
         animateStars();
@@ -641,7 +603,7 @@
                 }
             ],
 
-            typeText: (elementId, text, speed = 50, callback) => {
+            typeText: (elementId, text, speed = 40, callback) => {
                 const el = document.getElementById(elementId);
                 el.innerHTML = ''; let i = 0;
                 function type() {
@@ -672,7 +634,7 @@
             selectMission: (missionName, element) => {
                 sfx.click();
                 game.state.selectedMission = missionName;
-                document.querySelectorAll('.mission-card').forEach(c => c.style.borderColor = '#444');
+                document.querySelectorAll('.mission-card').forEach(c => c.style.borderColor = 'rgba(255,255,255,0.08)');
                 element.style.borderColor = 'var(--primary)';
                 setTimeout(() => { game.nextScreen('screen-5'); }, 500);
             },
@@ -696,20 +658,18 @@
                     const rect = container.getBoundingClientRect();
                     const yesRect = yesBtn.getBoundingClientRect();
 
-                    // Coordenadas absolutas del centro del botón SÍ dentro del contenedor
                     const yesCenterX = (yesRect.left - rect.left) + (yesRect.width / 2);
                     const yesCenterY = (yesRect.top - rect.top) + (yesRect.height / 2);
 
                     let newTop, newLeft;
-                    const minSafeDistance = 150; // Radio estricto de exclusión en pixeles
+                    const minSafeDistance = 140; 
 
-                    // Algoritmo geométrico: Generar posiciones hasta cumplir la separación radial mínima
                     for (let i = 0; i < 20; i++) {
-                        newTop = Math.random() * (rect.height - 70);
-                        newLeft = Math.random() * (rect.width - 110);
+                        newTop = Math.random() * (rect.height - 65);
+                        newLeft = Math.random() * (rect.width - 105);
 
-                        const noCenterX = newLeft + 55;
-                        const noCenterY = newTop + 25;
+                        const noCenterX = newLeft + 52;
+                        const noCenterY = newTop + 24;
 
                         const distance = Math.hypot(noCenterX - yesCenterX, noCenterY - yesCenterY);
                         if (distance > minSafeDistance) break;
@@ -724,8 +684,8 @@
                     if (Math.random() > 0.6) {
                         game.showToast(game.messages[Math.floor(Math.random() * game.messages.length)]);
                     }
-                    if (game.state.noAttempts === 15) document.getElementById('prob-bar-container').style.display = 'block';
-                    if (game.state.noAttempts === 16) { giveUpBtn.style.display = 'block'; sfx.success(); }
+                    if (game.state.noAttempts === 12) document.getElementById('prob-bar-container').style.display = 'block';
+                    if (game.state.noAttempts === 13) { giveUpBtn.style.display = 'block'; sfx.success(); }
                 };
 
                 noBtn.addEventListener('mouseover', moveButton);
@@ -758,7 +718,7 @@
 
                 let isCorrect = false;
                 if (qData.correct === -1) {
-                    feedbackEl.innerText = qData.feedback[idx]; isCorrect = true; 
+                    feedbackEl.innerText = qData.feedback[idx]; feedbackEl.style.color = 'var(--text-main)'; isCorrect = true; 
                 } else {
                     if (idx === qData.correct) {
                         feedbackEl.innerText = qData.feedback.correct; feedbackEl.style.color = 'var(--success)'; isCorrect = true;
@@ -785,7 +745,7 @@
                 const interval = setInterval(() => {
                     if (width >= 100) { clearInterval(interval); setTimeout(() => game.showResults(), 1000); }
                     else { width += 5; bar.style.width = width + '%'; txt.innerText = '█'.repeat(Math.floor(width/5)) + '░'.repeat(20 - Math.floor(width/5)) + ' ' + width + '%'; }
-                }, 100);
+                }, 90);
             },
 
             showResults: () => {
@@ -797,7 +757,7 @@
                     setTimeout(() => {
                         const div = document.createElement('div'); div.className = 'achievement'; div.innerText = text;
                         achList.appendChild(div); void div.offsetWidth; div.classList.add('show'); sfx.success();
-                    }, i * 1000 + 500);
+                    }, i * 800 + 400);
                 });
             },
 
@@ -812,7 +772,8 @@
                 window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
             }
         };
+
         window.onload = () => { game.typeText('intro-text', "Se ha detectado una posible compañera de misión. Presiona continuar para iniciar el protocolo."); };
     </script>
 </body>
-  </html>
+</html>
