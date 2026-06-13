@@ -721,4 +721,63 @@
                 if (qData.correct === -1) {
                     feedbackEl.innerText = qData.feedback[idx]; feedbackEl.style.color = 'var(--text-main)'; isCorrect = true; 
                 } else {
+                    if (idx === qData.correct) {
+                        feedbackEl.innerText = qData.feedback.correct; feedbackEl.style.color = 'var(--success)'; isCorrect = true;
+                    } else {
+                        feedbackEl.innerText = qData.feedback.wrong[idx] || qData.feedback.wrong.default;
+                        feedbackEl.style.color = 'var(--danger)';
+                    }
+                }
+                if (isCorrect) game.state.score++;
+                sfx.click();
+                document.getElementById('btn-next-q').style.display = 'inline-block';
+            },
+
+            nextQuestion: () => {
+                game.state.questionIndex++;
+                if (game.state.questionIndex < game.questions.length) game.loadQuestion();
+                else game.runAnalysis();
+            },
+
+            runAnalysis: () => {
+                game.nextScreen('screen-analysis');
+                const bar = document.getElementById('analysis-bar');
+                const txt = document.getElementById('analysis-text');
+                let width = 0;
+                const interval = setInterval(() => {
+                    if (width >= 100) { clearInterval(interval); setTimeout(() => game.showResults(), 1000); }
+                    else { width += 5; bar.style.width = width + '%'; txt.innerText = '█'.repeat(Math.floor(width/5)) + '░'.repeat(20 - Math.floor(width/5)) + ' ' + width + '%'; }
+                }, 90);
+            },
+
+            showResults: () => {
+                game.nextScreen('screen-results');
+                document.getElementById('kinder-count').innerText = game.state.score;
+                const achList = document.getElementById('achievements-list'); achList.innerHTML = '';
+                const achs = ["🏆 Sobreviviste al cuestionario espacial.", "🏆 Encontraste el botón correcto.", "🏆 Posible compañera de exploración."];
+                achs.forEach((text, i) => {
+                    setTimeout(() => {
+                        const div = document.createElement('div'); div.className = 'achievement'; div.innerText = text;
+                        achList.appendChild(div); void div.offsetWidth; div.classList.add('show'); sfx.success();
+                    }, i * 800 + 400);
+                });
+            },
+
+            showFinal: () => {
+                document.getElementById('final-mission-name').innerText = game.state.selectedMission;
+                game.nextScreen('screen-final');
+            },
+
+            sendWhatsApp: () => {
+                const phone = "5215623953139";
+                const text = `🚀 *Misión Aceptada* 🛸\n\nCapitán, he completado la evaluación.\n\n*Misión Seleccionada:* ${game.state.selectedMission}\n*Kinder Buenos ganados:* ${game.state.score}\n\nDiagnóstico final: Vale la pena intentarlo. ¿Coordenadas para el despegue?`;
+                window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
+            }
+        };
+
+        window.onload = () => { game.typeText('intro-text', "Se ha detectado una posible compañera de misión. Presiona continuar para iniciar el protocolo."); };
+    </script>
+</body>
+</html>
+
 
