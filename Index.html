@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Misión Espacial: Propuesta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00f2ff;
+            --secondary: #bd00ff;
+            --bg-dark: #050b14;
+            --glass: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --success: #00ff88;
+            --danger: #ff4d4d;
+            --hud-border: 1px solid rgba(0, 242, 255, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Exo 2', sans-serif;
+            overflow: hidden;
+        }
+
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        #app {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 600px;
+            height: 100%;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1, h2 {
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px var(--primary);
+        }
+
+        h1 { font-size: 1.8rem; line-height: 1.2; color: var(--primary); }
+        h2 { font-size: 1.4rem; color: var(--secondary); }
+        p { font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px; color: #ddd; }
+
+        .hud-box {
+            background: var(--glass);
+            border: var(--hud-border);
+            backdrop-filter: blur(5px);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.1);
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .btn {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 15px 30px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 5px;
+            margin: 10px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        .btn:hover {
+            background: var(--primary);
+            color: var(--bg-dark);
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-secondary {
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--secondary);
+            color: var(--bg-dark);
+            box-shadow: 0 0 15px var(--secondary);
+        }
+
+        .typewriter {
+            display: inline-block;
+            border-right: 2px solid var(--primary);
+            padding-right: 5px;
+            animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { border-color: transparent; }
+            50% { border-color: var(--primary); }
+        }
+
+        .mission-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            width: 100%;
+            max-height: 50vh;
+            overflow-y: auto;
+            padding: 5px;
+        }
+
+        .mission-card {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid #444;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: left;
+        }
+
+        .mission-card:hover, .mission-card.selected {
+            border-color: var(--primary);
+            background: rgba(0, 242, 255, 0.1);
+        }
+
+        .mission-title { font-weight: bold; color: var(--primary); font-family: 'Orbitron'; font-size: 0.9rem; }
+        .mission-desc { font-size: 0.85rem; color: #aaa; }
+
+        .game-area {
+            position: relative;
+            width: 100%;
+            min-height: 280px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px; 
+            border: 1px dashed rgba(255,255,255,0.1);
+            border-radius: 8px;
+        }
+
+        .game-area button {
+            position: static; 
+            transform: none !important;
+        }
+
+        #btn-yes { 
+            border-color: var(--success); 
+            color: var(--success); 
+            z-index: 30; /* Prioridad de capa absoluta */
+        }
+        #btn-yes:hover { background: var(--success); box-shadow: 0 0 15px var(--success); }
+
+        #btn-no { border-color: var(--danger); color: var(--danger); z-index: 20; }
+
+        #btn-no.moving {
+            position: absolute;
+            transition: top 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), left 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        #btn-giveup {
+            display: none;
+            border-color: #ffd700;
+            color: #ffd700;
+            font-size: 1rem;
+            padding: 10px 20px;
+            margin-top: 20px;
+            background: var(--bg-dark);
+        }
+
+        #toast-container {
+            position: fixed;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid var(--danger);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            text-align: center;
+            opacity: 0;
+            animation: toastPop 2s forwards;
+        }
+
+        @keyframes toastPop {
+            0% { opacity: 0; transform: translateY(10px); }
+            10% { opacity: 1; transform: translateY(0); }
+            80% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-10px); }
+        }
+
+        .celebration-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 30px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .planet {
+            font-size: 5rem;
+            animation: float 3s ease-in-out infinite;
+            position: relative;
+            z-index: 2;
+        }
+
+        .ring {
+            position: absolute;
+            width: 180px;
+            height: 60px;
+            border: 4px solid var(--primary);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-20deg);
+            z-index: 1;
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        .star-icon {
+            position: absolute;
+            color: yellow;
+            animation: twinkle 1s infinite alternate;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        @keyframes twinkle {
+            from { opacity: 0.3; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1.2); }
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            gap: 10px;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 20px;
+            background: #222;
+            border: 1px solid #444;
+            margin: 20px 0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+            transition: width 0.1s linear;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+        }
+        .stat-val { color: var(--primary); font-weight: bold; }
+
+        .achievement {
+            opacity: 0;
+            transform: scale(0.8);
+            margin: 10px 0;
+            background: linear-gradient(90deg, transparent, rgba(189, 0, 255, 0.2), transparent);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .achievement.show {
+            animation: unlock 0.5s forwards;
+        }
+
+        @keyframes unlock {
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        #prob-bar-container {
+            position: absolute;
+            bottom: 10px;
+            width: 90%;
+            display: none;
+        }
+        .prob-bar-bg { background: rgba(255,0,0,0.2); height: 5px; width: 100%; }
+        .prob-bar-fill { background: red; height: 100%; width: 100%; }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+    <canvas id="starfield"></canvas>
+
+    <div id="app">
+        
+        <div id="screen-1" class="screen active">
+            <div class="hud-box">
+                <h1>AGENCIA ESPACIAL<br>DE EXPLORACIÓN</h1>
+                <p><span id="intro-text" class="typewriter"></span></p>
+            </div>
+            <button class="btn" onclick="game.startMission()">Iniciar Misión</button>
+        </div>
+
+        <div id="screen-2" class="screen">
+            <h2>Capitán, tenemos una pregunta importante.</h2>
+            <p style="font-size: 1.3rem; margin-bottom: 40px;">¿Te gustaría salir y platicar conmigo?</p>
+            
+            <div class="game-area" id="game-area">
+                <button id="btn-yes" class="btn">Sí 🚀</button>
+                <button id="btn-no" class="btn">No ❌</button>
+                <div id="prob-bar-container">
+                    <div style="font-size: 0.7rem; color: #ff4d4d; text-align: left; margin-bottom: 2px;">Probabilidad de captura: 0.000001%</div>
+                    <div class="prob-bar-bg"><div class="prob-bar-fill"></div></div>
+                </div>
+            </div>
+            <button id="btn-giveup" class="btn" onclick="game.acceptGiveUp()">Me rindo 😅</button>
+        </div>
+
+        <div id="screen-3" class="screen">
+            <div class="celebration-container">
+                <div class="ring"></div>
+                <div class="planet">🪐🙂</div>
+                <span class="star-icon" style="top:0; left:10px">✨</span>
+                <span class="star-icon" style="top:10px; right:0; animation-delay:0.5s">✨</span>
+                <span class="star-icon" style="bottom:10px; left:20px; animation-delay:0.2s">✨</span>
+            </div>
+            <h1 style="color: var(--success)">¡Esoooo!</h1>
+            <p>Ahora necesito algunos datos para la TacoMisión Espacial.</p>
+            <button class="btn" onclick="game.nextScreen('screen-4')">Continuar</button>
+        </div>
+
+        <div id="screen-4" class="screen">
+            <h2>🪐 Selecciona una misión</h2>
+            <p>¿Qué tipo de exploración prefieres?</p>
+            <div class="mission-grid">
+                <div class="mission-card" onclick="game.selectMission('Nebulosa Café', this)">
+                    <div class="mission-title">☕ Nebulosa Café</div>
+                    <div class="mission-desc">Café, pan y buena conversación.</div>
+                </div>
+                <div class="mission-card" onclick="game.selectMission('Expedición a un lugar interesante', this)">
+                    <div class="mission-title">🏰 Expedición Interesting</div>
+                    <div class="mission-desc">Castillo, cine, museo o coordenadas secretas.</div>
+                </div>
+                <div class="mission-card" onclick="game.selectMission('Caminata Orbital', this)">
+                    <div class="mission-title">🚶 Caminata Orbital</div>
+                    <div class="mission-desc">Pasear sin prisa y platicar.</div>
+                </div>
+                <div class="mission-card" onclick="game.selectMission('Operación Taco', this)">
+                    <div class="mission-title">🌮 Operación Taco</div>
+                    <div class="mission-desc">Comida rica y conversaciones interesantes.</div>
+                </div>
+                <div class="mission-card" onclick="game.selectMission('Destino Sorpresa', this)">
+                    <div class="mission-title">🎲 Destino Sorpresa</div>
+                    <div class="mission-desc">Coordenadas clasificadas.</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-5" class="screen">
+            <h2>🔭 Misión Secundaria:<br>Test Astronómico</h2>
+            <p>¿Te crees capaz de ganarte un Kinder Bueno por cada respuesta correcta? 🍫</p>
+            <div class="hud-box" style="border-color: var(--secondary);">
+                <p style="font-size: 0.9rem; margin:0;">Advertencia: Las recompensas prometidas por esta agencia espacial son reales.</p>
+            </div>
+            <p>¿Deseas participar?</p>
+            <button class="btn" style="width: 200px;" onclick="game.startQuiz()">Sí 🚀</button>
+        </div>
+
+        <div id="screen-quiz" class="screen">
+            <div class="hud-box">
+                <h3 id="q-title">Pregunta X</h3>
+                <p id="q-text" style="font-size: 1.2rem; color: #fff;">¿Texto?</p>
+                <div id="q-options" class="quiz-options"></div>
+            </div>
+            <p id="q-feedback" style="min-height: 40px; color: var(--primary); font-weight: bold;"></p>
+            <button id="btn-next-q" class="btn" style="display: none;" onclick="game.nextQuestion()">Siguiente Pregunta</button>
+        </div>
+
+        <div id="screen-analysis" class="screen">
+            <h2>Analizando respuestas...</h2>
+            <div class="progress-bar-container">
+                <div id="analysis-bar" class="progress-bar"></div>
+            </div>
+            <p id="analysis-text">████░░░░░░ 40%</p>
+        </div>
+
+        <div id="screen-results" class="screen">
+            <h2>Diagnóstico del Sistema</h2>
+            <div class="hud-box">
+                <div class="stat-row"><span>Conocimientos astronómicos:</span> <span class="stat-val">Nivel Ingeniera</span></div>
+                <div class="stat-row"><span>Nivel de curiosidad:</span> <span class="stat-val">Alto</span></div>
+                <div class="stat-row"><span>Nivel de hambre:</span> <span class="stat-val">1000%</span></div>
+                <div class="stat-row"><span>Probabilidad de conversación:</span> <span class="stat-val">99%</span></div>
+                <div class="stat-row"><span>Riesgo de Aburrimiento:</span> <span class="stat-val">0.4%</span></div>
+                <div class="stat-row"><span>Kinder Buenos Adeudados:</span> <span class="stat-val" id="kinder-count">0</span></div>
+            </div>
+
+            <h3>Logros Desbloqueados</h3>
+            <div id="achievements-list"></div>
+
+            <button class="btn" style="margin-top: 30px;" onclick="game.showFinal()">Ver Diagnóstico Final</button>
+        </div>
+
+        <div id="screen-final" class="screen">
+            <h1>Diagnóstico Final</h1>
+            <div class="hud-box">
+                <p style="text-align: left;">
+                    Los cálculos indican que deberíamos:<br>
+                    ✓ Platicar.<br>
+                    ✓ Comer algo rico.<br>
+                    ✓ Reírnos un rato.<br>
+                    <strong>Resultado final:</strong> Vale la pena intentarlo.<br><br>
+                    <strong>🚀 Siguiente objetivo:</strong> Coordinar fecha y hora.<br>
+                    <strong>Salida aceptada:</strong> <span id="final-mission-name">...</span>
+                </p>
+            </div>
+            <button class="btn" style="background: var(--success); border-color: var(--success); color: #000;" onclick="game.sendWhatsApp()">
+                Enviar Transmisión
+            </button>
+        </div>
+
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script>
+        /* --- 1. Audio System (Synthesizer + BGM) --- */
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let bgmOscillator = null, bgmGain = null, isBgmPlaying = false;
+
+        const sfx = {
+            playTone: (freq, type, duration) => {
+                if(audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            },
+            click: () => sfx.playTone(800, 'sine', 0.1),
+            hover: () => sfx.playTone(400, 'triangle', 0.05),
+            error: () => sfx.playTone(150, 'sawtooth', 0.3),
+            success: () => {
+                sfx.playTone(600, 'sine', 0.1);
+                setTimeout(() => sfx.playTone(800, 'sine', 0.1), 100);
+                setTimeout(() => sfx.playTone(1200, 'sine', 0.3), 200);
+            },
+            jump: () => sfx.playTone(300, 'square', 0.1),
+            startBgm: () => {
+                if (isBgmPlaying) return;
+                if(audioCtx.state === 'suspended') audioCtx.resume();
+                bgmOscillator = audioCtx.createOscillator();
+                bgmGain = audioCtx.createGain();
+                bgmOscillator.type = 'sine';
+                bgmOscillator.frequency.setValueAtTime(50, audioCtx.currentTime);
+                bgmGain.gain.setValueAtTime(0, audioCtx.currentTime);
+                bgmOscillator.connect(bgmGain);
+                bgmGain.connect(audioCtx.destination);
+                bgmOscillator.start();
+                bgmGain.gain.linearRampToValueAtTime(0.03, audioCtx.currentTime + 4); 
+                isBgmPlaying = true;
+            }
+        };
+
+        document.body.addEventListener('click', () => { sfx.startBgm(); }, { once: true });
+
+        /* --- 2. Starfield Background --- */
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        const stars = [];
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Star {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.z = Math.random() * 2 + 0.5;
+                this.size = Math.random() * 1.5;
+                this.opacity = Math.random();
+            }
+            update() {
+                this.y += this.z * 0.5;
+                if (this.y > height) {
+                    this.y = 0;
+                    this.x = Math.random() * width;
+                }
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 150; i++) stars.push(new Star());
+
+        function animateStars() {
+            ctx.fillStyle = 'rgba(5, 11, 20, 0.3)';
+            ctx.fillRect(0, 0, width, height);
+            stars.forEach(star => { star.update(); star.draw(); });
+            requestAnimationFrame(animateStars);
+        }
+        animateStars();
+
+        /* --- 3. Game Logic --- */
+        const game = {
+            state: { currentScreen: 1, selectedMission: '', score: 0, noAttempts: 0, questionIndex: 0 },
+            messages: [
+                "Uy, casi.", "La gravedad impide seleccionar esa opción.",
+                "Ese botón es más rápido que la luz.", "Objetivo fuera del alcance.",
+                "La NASA quiere estudiar esa velocidad.", "Houston, tenemos un problema."
+            ],
+            questions: [
+                {
+                    q: "¿Qué se encuentra en el centro de nuestra galaxia?",
+                    options: ["🌎 La Tierra", "☀️ El Sol", "🍑 Tu cola", "🕳️ Sagitario A*"],
+                    correct: 3,
+                    feedback: {
+                        correct: "Correcto. Nivel de conocimiento astronómico detectado. +1 Kinder Bueno.",
+                        wrong: { 1: "Incorrecto. Gira gira tu calzón.", 2: "La respuesta fue científicamente cuestionable.", default: "Incorrecto." }
+                    }
+                },
+                {
+                    q: "¿Quién está más lejos de la Tierra?",
+                    options: ["☿ Mercurio", "♃ Júpiter"],
+                    correct: 1,
+                    feedback: { correct: "Correcto.", wrong: { default: "Houston... Necesitamos repasar el Sistema Solar." } }
+                },
+                {
+                    q: "¿Qué es un megapársec?",
+                    options: ["⚡ Una medida de velocidad", "🌍 Un cambio en la gravedad", "💫 Una unidad enorme de distancia"],
+                    correct: 2,
+                    feedback: { correct: "Respuesta científicamente correcta.", wrong: { default: "Incorrecto." } }
+                },
+                {
+                    q: "Si yo estuviera hecho de antimateria... ¿Qué harías?",
+                    options: ["🤝 Darme un abrazo", "👋 Saludar desde lejos", "🔬 Hacer un experimento", "🏃 Salir corriendo"],
+                    correct: -1,
+                    feedback: {
+                        0: "Valiente. Aunque ambos desapareceríamos instantáneamente.",
+                        1: "Inteligente. Es probablemente la opción más sensata, aunque triste.",
+                        2: "Nooooo. Prefiero tocar un cactus y explotar.",
+                        3: "JAJAJAJA. Respuesta comprensible."
+                    }
+                },
+                {
+                    q: "¿Qué probabilidad hay de que terminemos hablando del universo?",
+                    options: ["0%", "25%", "75%", "99.999999%"],
+                    correct: 3,
+                    feedback: { correct: "Exacto.", wrong: { default: "La computadora detecta una respuesta poco realista." } }
+                }
+            ],
+
+            typeText: (elementId, text, speed = 50, callback) => {
+                const el = document.getElementById(elementId);
+                el.innerHTML = ''; let i = 0;
+                function type() {
+                    if (i < text.length) { el.innerHTML += text.charAt(i); i++; setTimeout(type, speed); }
+                    else if (callback) callback();
+                }
+                type();
+            },
+
+            showToast: (msg) => {
+                const container = document.getElementById('toast-container');
+                const div = document.createElement('div');
+                div.className = 'toast'; div.innerText = msg;
+                container.appendChild(div); sfx.error();
+                setTimeout(() => div.remove(), 2100);
+            },
+
+            startMission: () => { sfx.success(); game.nextScreen('screen-2'); },
+
+            nextScreen: (screenId) => {
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                document.getElementById(screenId).classList.add('active');
+                game.state.currentScreen = screenId;
+                if (screenId === 'screen-1') game.typeText('intro-text', "Se ha detectado una posible compañera de misión. Presiona continuar para iniciar el protocolo.");
+                if (screenId === 'screen-2') game.initButtonGame();
+            },
+
+            selectMission: (missionName, element) => {
+                sfx.click();
+                game.state.selectedMission = missionName;
+                document.querySelectorAll('.mission-card').forEach(c => c.style.borderColor = '#444');
+                element.style.borderColor = 'var(--primary)';
+                setTimeout(() => { game.nextScreen('screen-5'); }, 500);
+            },
+
+            initButtonGame: () => {
+                const noBtn = document.getElementById('btn-no');
+                const yesBtn = document.getElementById('btn-yes');
+                const container = document.getElementById('game-area');
+                const giveUpBtn = document.getElementById('btn-giveup');
+                
+                noBtn.classList.remove('moving');
+                noBtn.style.position = ''; noBtn.style.top = ''; noBtn.style.left = '';
+                giveUpBtn.style.display = 'none';
+                document.getElementById('prob-bar-container').style.display = 'none';
+
+                yesBtn.onclick = () => { sfx.success(); game.nextScreen('screen-3'); };
+
+                const moveButton = (e) => {
+                    if (!noBtn.classList.contains('moving')) noBtn.classList.add('moving');
+
+                    const rect = container.getBoundingClientRect();
+                    const yesRect = yesBtn.getBoundingClientRect();
+
+                    // Coordenadas absolutas del centro del botón SÍ dentro del contenedor
+                    const yesCenterX = (yesRect.left - rect.left) + (yesRect.width / 2);
+                    const yesCenterY = (yesRect.top - rect.top) + (yesRect.height / 2);
+
+                    let newTop, newLeft;
+                    const minSafeDistance = 150; // Radio estricto de exclusión en pixeles
+
+                    // Algoritmo geométrico: Generar posiciones hasta cumplir la separación radial mínima
+                    for (let i = 0; i < 20; i++) {
+                        newTop = Math.random() * (rect.height - 70);
+                        newLeft = Math.random() * (rect.width - 110);
+
+                        const noCenterX = newLeft + 55;
+                        const noCenterY = newTop + 25;
+
+                        const distance = Math.hypot(noCenterX - yesCenterX, noCenterY - yesCenterY);
+                        if (distance > minSafeDistance) break;
+                    }
+
+                    noBtn.style.top = newTop + 'px';
+                    noBtn.style.left = newLeft + 'px';
+
+                    game.state.noAttempts++;
+                    sfx.jump();
+
+                    if (Math.random() > 0.6) {
+                        game.showToast(game.messages[Math.floor(Math.random() * game.messages.length)]);
+                    }
+                    if (game.state.noAttempts === 15) document.getElementById('prob-bar-container').style.display = 'block';
+                    if (game.state.noAttempts === 16) { giveUpBtn.style.display = 'block'; sfx.success(); }
+                };
+
+                noBtn.addEventListener('mouseover', moveButton);
+                noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(e); });
+            },
+
+            acceptGiveUp: () => { sfx.success(); game.nextScreen('screen-3'); },
+            startQuiz: () => { game.state.questionIndex = 0; game.state.score = 0; game.nextScreen('screen-quiz'); game.loadQuestion(); },
+
+            loadQuestion: () => {
+                const qData = game.questions[game.state.questionIndex];
+                document.getElementById('q-title').innerText = `Pregunta ${game.state.questionIndex + 1}`;
+                document.getElementById('q-text').innerText = qData.q;
+                document.getElementById('q-feedback').innerText = '';
+                document.getElementById('btn-next-q').style.display = 'none';
+
+                const optsDiv = document.getElementById('q-options'); optsDiv.innerHTML = '';
+                qData.options.forEach((opt, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn btn-secondary'; btn.style.textAlign = 'left'; btn.innerText = opt;
+                    btn.onclick = () => game.handleAnswer(idx);
+                    optsDiv.appendChild(btn);
+                });
+            },
+
+            handleAnswer: (idx) => {
+                const qData = game.questions[game.state.questionIndex];
+                const feedbackEl = document.getElementById('q-feedback');
+                document.querySelectorAll('#q-options button').forEach(b => b.disabled = true);
+
+                let isCorrect = false;
+                if (qData.correct === -1) {
+                    feedbackEl.innerText = qData.feedback[idx]; isCorrect = true; 
+                } else {
+                    if (idx === qData.correct) {
+                        feedbackEl.innerText = qData.feedback.correct; feedbackEl.style.color = 'var(--success)'; isCorrect = true;
+                    } else {
+                        feedbackEl.innerText = qData.feedback.wrong[idx] || qData.feedback.wrong.default; feedbackEl.style.color = 'var(--danger)';
+                    }
+                }
+                if (isCorrect) game.state.score++;
+                sfx.click();
+                document.getElementById('btn-next-q').style.display = 'inline-block';
+            },
+
+            nextQuestion: () => {
+                game.state.questionIndex++;
+                if (game.state.questionIndex < game.questions.length) game.loadQuestion();
+                else game.runAnalysis();
+            },
+
+            runAnalysis: () => {
+                game.nextScreen('screen-analysis');
+                const bar = document.getElementById('analysis-bar');
+                const txt = document.getElementById('analysis-text');
+                let width = 0;
+                const interval = setInterval(() => {
+                    if (width >= 100) { clearInterval(interval); setTimeout(() => game.showResults(), 1000); }
+                    else { width += 5; bar.style.width = width + '%'; txt.innerText = '█'.repeat(Math.floor(width/5)) + '░'.repeat(20 - Math.floor(width/5)) + ' ' + width + '%'; }
+                }, 100);
+            },
+
+            showResults: () => {
+                game.nextScreen('screen-results');
+                document.getElementById('kinder-count').innerText = game.state.score;
+                const achList = document.getElementById('achievements-list'); achList.innerHTML = '';
+                const achs = ["🏆 Sobreviviste al cuestionario espacial.", "🏆 Encontraste el botón correcto.", "🏆 Posible compañera de exploración."];
+                achs.forEach((text, i) => {
+                    setTimeout(() => {
+                        const div = document.createElement('div'); div.className = 'achievement'; div.innerText = text;
+                        achList.appendChild(div); void div.offsetWidth; div.classList.add('show'); sfx.success();
+                    }, i * 1000 + 500);
+                });
+            },
+
+            showFinal: () => {
+                document.getElementById('final-mission-name').innerText = game.state.selectedMission;
+                game.nextScreen('screen-final');
+            },
+
+            sendWhatsApp: () => {
+                const phone = "5215623953139";
+                const text = `🚀 *Misión Aceptada* 🛸\n\nCapitán, he completado la evaluación.\n\n*Misión Seleccionada:* ${game.state.selectedMission}\n*Kinder Buenos ganados:* ${game.state.score}\n\nDiagnóstico final: Vale la pena intentarlo. ¿Coordenadas para el despegue?`;
+                window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
+            }
+        };
+        window.onload = () => { game.typeText('intro-text', "Se ha detectado una posible compañera de misión. Presiona continuar para iniciar el protocolo."); };
+    </script>
+</body>
+  </html>
